@@ -89,8 +89,8 @@
 ## 📍 Current Status
 
 **Last worked on:** 2026-02-27
-**Currently working on:** Перенос проекта из ChatGPT в Claude, наполнение репо
-**Next step:** Загрузить экспорты из ChatGPT по linkedin scoring (методология) и маркетинговой стратегии
+**Currently working on:** Перенос проекта из ChatGPT в Claude — завершён
+**Next step:** Загрузить экспорт маркетинговой стратегии из ChatGPT (гео, аудитория, боли/JTBD, воронка, ценообразование Stars, онбординг, удержание) — экспорт не был получен из-за сброса контекста
 
 ---
 
@@ -114,11 +114,18 @@
 |------|------------|
 | `bot/strategy/marketing-strategy.md` | Флоу, архитектура, статус разделов |
 | `bot/messages/message-scripts.md` | Все тексты сообщений и кнопок (из salebot backup) |
+| `bot/design/new-resume.md` | Концепция /new_resume (placeholder) |
+| `bot/design/full-linkedin.md` | Концепция /full_linkedin paid (placeholder) |
+| `bot/design/my-cab.md` | Концепция /my_cab личного кабинета (placeholder) |
 | `backend/n8n-architecture.md` | Логика n8n workflows |
 | `backend/api-config.md` | API endpoints и конфигурация |
 | `linkedin/scoring/methodology.md` | Методология оценки профиля |
-| `linkedin/prompts/prompts.md` | AI-промпты для анализа |
-| `artifacts/` | Оригинальные бэкапы и конфиги |
+| `linkedin/prompts/index.md` | Индекс AI-промптов |
+| `linkedin/prompts/scoring-engine-v3-final.md` | **PRODUCTION** Score Engine v3 Conservative |
+| `linkedin/prompts/telegram-summary-v2-final.md` | **PRODUCTION** Telegram Summary v2 |
+| `linkedin/open-questions.md` | Открытые вопросы и нерешённые задачи |
+| `linkedin/artifacts/` | Артефакты: debug node, expressions, примеры |
+| `artifacts/` | Оригинальные бэкапы (Salebot, n8n workflow) |
 
 ---
 

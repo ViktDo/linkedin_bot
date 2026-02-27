@@ -1,0 +1,29 @@
+{
+  "goal_type": "Brand",
+  "result_lang": "ru",
+  "normalized_profile": {
+    "language_detected": "en",
+    "goal_type": "Brand",
+    "headline": "I help SaaS teams grow MRR | B2B Marketing & Analytics",
+    "about": "Backend developer with 6+ years in fintech. I build scalable services in Python, design APIs, and improve reliability. Open to remote roles.",
+    "experience": [
+      {
+        "company": "Acme FinTech",
+        "role": "Senior Backend Developer",
+        "dates": "2022–Present",
+        "achievements": [
+          "Built REST APIs (Python, FastAPI)",
+          "Improved system performance by ~30%",
+          "Designed PostgreSQL database schemas",
+          "Led migration to microservices architecture"
+        ]
+      }
+    ],
+    "skills": [
+      "Python",
+      "FastAPI",
+      "PostgreSQL"
+    ],
+    "link": "www.linkedin.com/in/example"
+  }
+}

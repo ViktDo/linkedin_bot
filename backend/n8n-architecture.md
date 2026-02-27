@@ -291,7 +291,16 @@ returning id;
 
 1. **Потеря обогащения при нормализации** — подозрение что после всех нормализаций часть данных не доходит до LLM. Проявлялось в `Message a model1`: приходил объект без ожидаемого обогащения, `raw_text` мог быть не "максимальным".
 
-2. **`normalized_profile` превращается в `[object Object]`** — при сборке JSON body в n8n, если вставлять объект без `JSON.stringify()`, он сериализуется неправильно. Нужно использовать `JSON.stringify(...)` в expression.
+2. **`normalized_profile` превращается в `[object Object]`** — при сборке JSON body в n8n, если вставлять объект без `JSON.stringify()`, он сериализуется неправильно. **Решение зафиксировано**: использовать `JSON.stringify(...)` + `.first()` в expression:
+   ```javascript
+   ={{ JSON.stringify({
+     goal_type: (($node["Normalize input"].first().json.payload.goal_type || "brand")+"").toLowerCase().trim(),
+     result_lang: (($node["Normalize input"].first().json.payload.lang || "ru")+"").toLowerCase().trim(),
+     normalized_profile: $node["Code in JavaScript"].first().json.normalized_profile
+   }) }}
+   ```
+   `.first()` гарантирует стабильный item при слиянии веток (Merge node). Без него item может "плавать".
+   Подробнее: `linkedin/artifacts/expression-user-content.txt`
 
 3. **`link.present=true`, но `link.data=null`** — ситуация когда ссылка "есть", но данные от Apify не попали в bundle. Ломает приоритет `link` в `Enrich sources`.
 

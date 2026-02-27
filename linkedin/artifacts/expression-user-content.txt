@@ -1,0 +1,32 @@
+# n8n Expression: stable user.content for Score Engine
+
+## Проблема
+
+При передаче normalized_profile в LLM-ноду через обычный expression:
+  {{ $node["Code in JavaScript"].json.normalized_profile }}
+
+Объект сериализуется как "[object Object]" → модель не получает данные → INSUFFICIENT_DATA.
+
+## Решение
+
+Использовать JSON.stringify + .first() для стабильного item:
+
+={{ JSON.stringify({
+  goal_type: (($node["Normalize input"].first().json.payload.goal_type || "brand")+"").toLowerCase().trim(),
+  result_lang: (($node["Normalize input"].first().json.payload.lang || "ru")+"").toLowerCase().trim(),
+  normalized_profile: $node["Code in JavaScript"].first().json.normalized_profile
+}) }}
+
+## Почему .first()
+
+.first() гарантирует, что всегда берётся первый item, независимо от того, какой item активен
+в данной ветке workflow. Без .first() при слиянии веток (Merge node) item может плавать.
+
+## Почему JSON.stringify
+
+JSON.stringify принудительно сериализует объект в строку перед передачей в LLM.
+Без него n8n передаёт объект напрямую, но при интерполяции в строку он становится [object Object].
+
+## Размещение
+
+Поле "user" → Content в ноде "Message a model1" (OpenAI, Score Engine).
