@@ -144,9 +144,16 @@ CREATE TABLE reports (
 ```
 
 ### daily_limits
-Лимиты на бесплатные запросы в день (таблица создана, в workflow пока не используется).
+Лимиты на бесплатные запросы в день. Таблица создана, **в workflow пока не подключена** — это следующая задача.
+
+**Планируемая логика:**
+- Проверка лимита на **входе** — до вызова LLM, чтобы не тратить токены впустую
+- Списание на **выходе** — только после успешной фиксации результата
+- **Лимит:** 3 бесплатных анализа в день на `platform_id`
+- **Идемпотентность:** расширить схему полем `free_score_request_ids text[]`, чтобы не списывать повторно один и тот же `request_id` при ретраях
 
 ```sql
+-- Текущая схема:
 CREATE TABLE daily_limits (
   platform_id       TEXT NOT NULL,
   day               DATE NOT NULL,
@@ -154,10 +161,20 @@ CREATE TABLE daily_limits (
 
   PRIMARY KEY(platform_id, day)
 );
+
+-- Планируемое расширение:
+ALTER TABLE daily_limits ADD COLUMN free_score_request_ids TEXT[] NOT NULL DEFAULT '{}';
 ```
 
 ### llm_logs
-Логи вызовов LLM (таблица создана, в workflow пока не используется).
+Логи вызовов LLM. Таблица создана, **в workflow пока не подключена**.
+
+**Планируемая логика:**
+- Одна запись на каждый LLM-вызов
+- `prompt_name`: смысловая метка — `normalize`, `score`, `telegram_message`
+- `input_hash` / `output_hash`: считать через `pgcrypto.digest` в PostgreSQL (модуль `crypto` в n8n запрещён)
+- `tokens_in` / `tokens_out`: с fallback по путям ответа ноды, допускать NULL
+- `latency_ms`: если доступно через n8n, иначе NULL
 
 ```sql
 CREATE TABLE llm_logs (
