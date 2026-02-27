@@ -7,51 +7,92 @@
 
 ## 🎯 Project Overview
 
-**[TO BE FILLED — paste ChatGPT export here]**
+**LinkedIn Bot** — Telegram-бот для автоматического анализа LinkedIn-профилей и создания PDF-резюме под вакансии.
 
-What is this bot? What problem does it solve? Who is the target audience?
+**Проблема:** Большинство LinkedIn-профилей плохо оптимизированы — они не проходят AI/ATS-фильтры рекрутеров и не передают ценность специалиста. Резюме часто не адаптированы под конкретные вакансии.
+
+**Решение:** Бот собирает данные профиля (ссылка / PDF / текст по блокам), отправляет в n8n для AI-анализа и возвращает структурированный отчёт с рекомендациями прямо в Telegram.
+
+**Целевая аудитория:** специалисты, ищущие работу, клиентов или строящие личный бренд через LinkedIn.
 
 ---
 
 ## 🏗️ Architecture Overview
 
-**[TO BE FILLED]**
+```
+Пользователь (Telegram)
+       ↓
+  Salebot.pro (фронтенд + логика диалогов)
+       ↓  POST webhook
+  n8n (backend, https://n8n.bot-craft.ru)
+       ↓
+  AI-анализ (OpenAI / Claude)
+       ↓
+  Ответ → Salebot → Telegram
+```
 
-High-level: how does the system work end-to-end?
+**Стек:**
+- **Frontend / Bot logic:** Salebot.pro
+- **Backend / Automation:** n8n (self-hosted, домен n8n.bot-craft.ru)
+- **AI:** подключается через n8n
+- **Мессенджер:** Telegram
 
 ---
 
 ## ✅ Decisions Made
 
-Key decisions already taken (fill as project progresses):
-
-- [ ] ...
+- ✅ Фронтенд — Salebot.pro (не кастомный бот)
+- ✅ Backend — n8n (self-hosted)
+- ✅ Профиль принимается 4 способами: PDF+ссылка / только PDF / текст по блокам / только ссылка
+- ✅ Цели пользователя: Job / Clients / Brand
+- ✅ Язык бота и язык профиля — независимые настройки
+- ✅ Бесплатный аудит (free_audit) и платный полный отчёт — разные режимы
+- ✅ Валидация LinkedIn URL через regex
+- ✅ Очистка переменных профиля при каждом новом запуске аудита
+- ✅ Экранирование переменных через tg_escape() перед выводом
 
 ---
 
 ## 📍 Current Status
 
-**Last worked on:** —
-**Currently working on:** —
-**Next step:** —
+**Last worked on:** 2026-02-27
+**Currently working on:** Перенос проекта из ChatGPT в Claude, наполнение репо
+**Next step:** Загрузить экспорт из ChatGPT по backend (n8n) и linkedin scoring
+
+---
+
+## 🗂️ Sections Status
+
+| Раздел бота | Статус |
+|---|---|
+| /start + язык | ✅ Готово |
+| /about | ✅ Готово |
+| /test_linkedin (аудит) | ✅ Готово (флоу + API) |
+| /new_resume (резюме) | ❌ Не реализовано |
+| /full_linkedin (полный разбор) | ❌ Не реализовано |
+| /my_cab (личный кабинет) | ❌ Не реализовано |
+| EN-версия текстов | ⚠️ Структура есть, тексты только RU |
 
 ---
 
 ## 🔗 Key Files
 
-| File | What's inside |
-|------|--------------|
-| `backend/n8n-architecture.md` | n8n workflow logic |
-| `backend/api-config.md` | API config & structure |
-| `linkedin/scoring/methodology.md` | Scoring methodology |
-| `linkedin/prompts/prompts.md` | All AI prompts |
-| `bot/strategy/marketing-strategy.md` | Marketing & bot logic |
-| `bot/messages/message-scripts.md` | Message scripts |
+| Файл | Содержимое |
+|------|------------|
+| `bot/strategy/marketing-strategy.md` | Флоу, архитектура, статус разделов |
+| `bot/messages/message-scripts.md` | Все тексты сообщений и кнопок (из salebot backup) |
+| `backend/n8n-architecture.md` | Логика n8n workflows |
+| `backend/api-config.md` | API endpoints и конфигурация |
+| `linkedin/scoring/methodology.md` | Методология оценки профиля |
+| `linkedin/prompts/prompts.md` | AI-промпты для анализа |
+| `artifacts/` | Оригинальные бэкапы и конфиги |
 
 ---
 
 ## ⚠️ Important Constraints & Notes
 
-**[TO BE FILLED]**
-
-Any limitations, preferences, non-obvious decisions the team made.
+- n8n self-hosted на домене `n8n.bot-craft.ru` — это продакшн
+- Webhook endpoint аудита: `POST https://n8n.bot-craft.ru/webhook/linkedin/audit`
+- Ответ из n8n парсится через `splitter('#{question}', ';')` → `status = split[1]`
+- Salebot backup: `artifacts/salebot-backup-764744-2026-02-27.json`
+- Backend и промпты для LinkedIn scoring ещё не загружены в репо (придут из ChatGPT экспортов)
